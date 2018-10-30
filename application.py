@@ -1,6 +1,9 @@
-from flask import Flask, render_template, request
+from flask import Flask, redirect, render_template, request
 
 app = Flask(__name__)
+
+# Registered students
+students = []
 
 
 @app.route("/")
@@ -10,7 +13,17 @@ def index():
 
 @app.route("/register", methods=["POST"])
 def register():
-    if not request.form.get("name") or not request.form.get("dorm"):
+    name = request.form.get("name")
+    dorm = request.form.get("dorm")
+    if not name or not dorm:
         return render_template("failure.html")
 
-    return render_template("success.html")
+    students.append((name, dorm))
+    return redirect("/registrants")
+
+
+@app.route("/registered")
+def registered():
+    return render_template("registered.html", students=students)
+
+
